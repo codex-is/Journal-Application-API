@@ -1,12 +1,9 @@
 package com.harsh.JournallingApplication.service;
-
 import com.harsh.JournallingApplication.entity.User;
 import com.harsh.JournallingApplication.repository.UserRepository;
-
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -24,11 +24,11 @@ public class JournalEntryController {
     @GetMapping("/{userName}")
     public ResponseEntity<?> getAllJournalEntriesOfUser(@PathVariable String userName){
         User user = userService.findByUsername(userName);
-     List<JournalEntry> all = user.getJournalEntries();
-     if(all != null && !all.isEmpty()){
+        List<JournalEntry> all = user.getJournalEntries();
+        if(all != null && !all.isEmpty()){
             return new ResponseEntity<>(all,HttpStatus.OK);
         }
-     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("{userName}")
@@ -71,6 +71,6 @@ public class JournalEntryController {
             journalEntryService.saveEntry(old);
             return new ResponseEntity<>(old, HttpStatus.OK);
         }
-       return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>( HttpStatus.NOT_FOUND);
     }
 }
