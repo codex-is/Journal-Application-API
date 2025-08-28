@@ -3,16 +3,22 @@ import com.harsh.JournallingApplication.entity.User;
 import com.harsh.JournallingApplication.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public class UserService {
+public class  UserService {
     @Autowired
     private UserRepository userRepository;
 
+    //implementing BCrypt password encoder
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+
     public void saveEntry(User user){
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
     }
     public List<User> getAll(){
