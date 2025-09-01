@@ -3,6 +3,9 @@ import com.harsh.JournallingApplication.entity.User;
 import com.harsh.JournallingApplication.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -13,13 +16,29 @@ public class  UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private JWTservice jwtService;
+
+    @Autowired
+    AuthenticationManager authManager;
+
     //implementing BCrypt password encoder
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+
 
 
     public void saveEntry(User user){
         user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    public  String verify(User user) {
+        Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+        if(authentication.isAuthenticated()){
+            return jwtService.generateToken();
+        }
+        return "invalid";
     }
     public List<User> getAll(){
         return userRepository.findAll();

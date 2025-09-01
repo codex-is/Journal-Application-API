@@ -1,9 +1,11 @@
 package com.harsh.JournallingApplication.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -53,7 +55,10 @@ public class SpringSecurity {
         // Disable CSRF (recommended for stateless REST APIs but use cautiously for web apps)
         http.csrf(customizer ->customizer.disable());
         // Require authentication for every request (can be fine-tuned with request matchers)
-        http.authorizeHttpRequests(request -> request.anyRequest().authenticated());
+        http.authorizeHttpRequests(request -> request
+                .requestMatchers("/user/register", "/user/login")
+                .permitAll()
+                .anyRequest().authenticated());
         // Enable default form-based login page
         http.formLogin(Customizer.withDefaults());
         http.httpBasic(Customizer.withDefaults());
@@ -80,6 +85,11 @@ public class SpringSecurity {
         // Attach custom UserDetailsService for fetching user data (username, roles, password)
         provider.setUserDetailsService(userDetailsService);
         return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
 

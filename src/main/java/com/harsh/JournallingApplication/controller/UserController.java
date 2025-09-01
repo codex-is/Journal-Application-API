@@ -50,7 +50,7 @@ public class UserController {
      * ⚠️ Note: In production, response should ideally return 201 CREATED
      *   with new resource details or a location header.
      */
-    @PostMapping
+    @PostMapping("/register")
     public void createUser(@RequestBody User user){
         userService.saveEntry(user);
     }
@@ -74,5 +74,10 @@ public class UserController {
             userService.saveEntry(userInDb);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @PostMapping("/login")
+    public String login(@RequestBody User user){
+        String result = userService.verify(user);
+        return result;
     }
 }
