@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,15 +30,16 @@ public class  UserService {
 
 
 
-    public void saveEntry(User user){
+    public void saveNewEntry(User user){
         user.setPassword(encoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("USER"));
         userRepository.save(user);
     }
 
     public  String verify(User user) {
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
         if(authentication.isAuthenticated()){
-            return jwtService.generateToken();
+            return jwtService.generateToken(user.getUsername());
         }
         return "invalid";
     }
@@ -51,6 +54,9 @@ public class  UserService {
     }
     public User findByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+    public void saveUser(User user){
+        userRepository.save(user);
     }
 
 }

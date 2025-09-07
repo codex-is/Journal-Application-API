@@ -1,4 +1,6 @@
 package com.harsh.JournallingApplication.config;
+import com.harsh.JournallingApplication.filter.JwtFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Spring security Configuration for securing the application
@@ -35,7 +38,11 @@ public class SpringSecurity {
      * user credentials (from database or other stores).
      * This gets injected by Spring automatically.
      */
+    @Autowired
     private final UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     public SpringSecurity(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -56,12 +63,13 @@ public class SpringSecurity {
         http.csrf(customizer ->customizer.disable());
         // Require authentication for every request (can be fine-tuned with request matchers)
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("/user/register", "/user/login")
+                .requestMatchers("/user/register", "/user/login","/public/health-check","/user/register")
                 .permitAll()
                 .anyRequest().authenticated());
         // Enable default form-based login page
         http.formLogin(Customizer.withDefaults());
         http.httpBasic(Customizer.withDefaults());
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         // If you want stateless authentication (like with JWT), uncomment below:
  //     http.sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
