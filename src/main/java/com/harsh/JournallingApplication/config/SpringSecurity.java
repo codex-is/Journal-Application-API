@@ -63,8 +63,9 @@ public class SpringSecurity {
         http.csrf(customizer ->customizer.disable());
         // Require authentication for every request (can be fine-tuned with request matchers)
         http.authorizeHttpRequests(request -> request
-                .requestMatchers("/user/register", "/user/login","/public/health-check","/user/register")
+                .requestMatchers("/user/login","/public/health-check","/user/register")
                 .permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
         // Enable default form-based login page
         http.formLogin(Customizer.withDefaults());

@@ -52,7 +52,7 @@ public class UserController {
      */
     @PostMapping("/register")
     public void createUser(@RequestBody User user){
-        userService.saveNewEntry(user);
+        userService.saveNewUser(user);
     }
 
     /**
@@ -71,7 +71,7 @@ public class UserController {
         if(userInDb != null){
             userInDb.setUsername(user.getUsername());
             userInDb.setPassword(user.getPassword());
-            userService.saveNewEntry(userInDb);
+            userService.saveNewUser(userInDb);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
