@@ -3,6 +3,7 @@ import com.harsh.JournallingApplication.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -59,10 +60,15 @@ public class SpringSecurity {
      */
     @Bean
     public SecurityFilterChain securityFilterChain( HttpSecurity http) throws Exception{
+
+        http.cors(Customizer.withDefaults());
+        http.csrf(customizer -> customizer.disable());
+
         // Disable CSRF (recommended for stateless REST APIs but use cautiously for web apps)
         http.csrf(customizer ->customizer.disable());
         // Require authentication for every request (can be fine-tuned with request matchers)
         http.authorizeHttpRequests(request -> request
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/user/login","/public/health-check","/user/register")
                 .permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
