@@ -75,10 +75,10 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-//    @PostMapping("/login")
-//    public String login(@RequestBody User user){
-//        String result = userService.verify(user);
-//        return result;
-//    }
+    @PostMapping("/login")
+    public String login(@RequestBody User user){
+        String result = userService.verify(user);
+        return result;
+    }
 
 }
